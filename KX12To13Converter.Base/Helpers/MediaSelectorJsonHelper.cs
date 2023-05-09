@@ -28,7 +28,7 @@ namespace KX12To13Converter
         /// <returns>The Json string with transformed property</returns>
         public static string TransformMediaUrlToMediaSelector(string json, string propertyName, ref List<string> valuesNotFound)
         {
-            var regex = RegexHelper.GetRegex($@"\""{propertyName}\"":\""([^\""\?\#]*)((\?([^\""]*))|(\#([^\""]*)))\""");
+            var regex = RegexHelper.GetRegex($@"\""{propertyName}\"":\""([^\""\?\#]*)((\?([^\""]*))|(\#([^\""]*))|)\""");
             var matches = regex.Matches(json);
             if (matches.Count > 0)
             {
@@ -36,8 +36,8 @@ namespace KX12To13Converter
                 {
                     if (match.Groups.Count > 0)
                     {
-                        var filePath = match.Groups[0].Value; // File
-                        string afterPathParams = match.Groups.Count >= 2 ? match.Groups[1].Value : "";
+                        var filePath = (match.Groups.Count >= 2) ? match.Groups[1].Value : ""; // File
+                        string afterPathParams = (match.Groups.Count >= 3) ? match.Groups[2].Value : "";
                         var splitPath = filePath.ToLower().Split("/".ToCharArray()).ToList();
                         Guid? fileGuid = null;
                         if (splitPath.Contains("getmedia") && splitPath.Count > splitPath.IndexOf("getmedia"))
